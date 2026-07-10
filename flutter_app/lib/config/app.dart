@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../features/onboarding/presentation/screens/onboarding_screen.dart';
+import '../features/authentication/presentation/screens/login_screen.dart';
+import '../features/authentication/presentation/screens/register_screen.dart';
 
 class SecureVaultApp extends StatelessWidget {
   const SecureVaultApp({super.key});
@@ -9,7 +10,7 @@ class SecureVaultApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'SecureVault AI',
-      home: const OnboardingScreen(),
+      home: const LoginScreen(),
     );
   }
 }
