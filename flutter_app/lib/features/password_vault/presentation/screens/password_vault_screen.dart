@@ -37,9 +37,10 @@ class PasswordVaultScreen extends StatelessWidget {
               final password = provider.passwords[index];
 
               return PasswordTile(
-                website: password.website,
-                username: password.username,
-              );
+  website: password.website,
+  username: password.username,
+  password: password.password,
+);
             },
           );
         },
