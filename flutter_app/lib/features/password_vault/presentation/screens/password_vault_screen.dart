@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'add_password_screen.dart';
 
 class PasswordVaultScreen extends StatelessWidget {
   const PasswordVaultScreen({super.key});
@@ -20,7 +21,14 @@ class PasswordVaultScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddPasswordScreen(),
+      ),
+    );
+  },
         child: const Icon(Icons.add),
       ),
     );
