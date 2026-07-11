@@ -4,12 +4,18 @@ class CustomTextField extends StatefulWidget {
   final String label;
   final IconData icon;
   final bool obscureText;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final TextInputType keyboardType;
 
   const CustomTextField({
     super.key,
     required this.label,
     required this.icon,
     this.obscureText = false,
+    this.controller,
+    this.validator,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
@@ -27,12 +33,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      controller: widget.controller,
+      keyboardType: widget.keyboardType,
+      validator: widget.validator,
       obscureText: _isHidden,
       decoration: InputDecoration(
         labelText: widget.label,
         prefixIcon: Icon(widget.icon),
-
         suffixIcon: widget.obscureText
             ? IconButton(
                 icon: Icon(
@@ -47,7 +55,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 },
               )
             : null,
-
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
