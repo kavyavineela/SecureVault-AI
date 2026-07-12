@@ -10,4 +10,14 @@ class PasswordProvider extends ChangeNotifier {
     _passwords.add(password);
     notifyListeners();
   }
+
+  void deletePassword(int index) {
+    _passwords.removeAt(index);
+    notifyListeners();
+  }
+
+  void updatePassword(int index, PasswordModel updatedPassword) {
+    _passwords[index] = updatedPassword;
+    notifyListeners();
+  }
 }

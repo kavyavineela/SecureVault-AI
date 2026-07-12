@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../logic/providers/password_provider.dart';
 import '../widgets/password_tile.dart';
 import 'add_password_screen.dart';
+import 'edit_password_screen.dart';
 
 class PasswordVaultScreen extends StatelessWidget {
   const PasswordVaultScreen({super.key});
@@ -15,7 +16,6 @@ class PasswordVaultScreen extends StatelessWidget {
         title: const Text("Password Vault"),
         centerTitle: true,
       ),
-
       body: Consumer<PasswordProvider>(
         builder: (context, provider, child) {
           if (provider.passwords.isEmpty) {
@@ -37,21 +37,36 @@ class PasswordVaultScreen extends StatelessWidget {
               final password = provider.passwords[index];
 
               return PasswordTile(
-  website: password.website,
-  username: password.username,
-  password: password.password,
-);
+                website: password.website,
+                username: password.username,
+                password: password.password,
+
+                onEdit: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => EditPasswordScreen(
+                        index: index,
+                        password: password,
+                      ),
+                    ),
+                  );
+                },
+
+                onDelete: () {
+                  provider.deletePassword(index);
+                },
+              );
             },
           );
         },
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const AddPasswordScreen(),
+              builder: (_) => const AddPasswordScreen(),
             ),
           );
         },
