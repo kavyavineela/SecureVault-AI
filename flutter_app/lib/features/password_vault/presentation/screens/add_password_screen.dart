@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/utils/password_strength.dart';
 import '../../domain/models/password_model.dart';
 import '../../logic/providers/password_provider.dart';
 import '../../../authentication/presentation/widgets/custom_button.dart';
@@ -15,12 +15,23 @@ class AddPasswordScreen extends StatefulWidget {
 }
 
 class _AddPasswordScreenState extends State<AddPasswordScreen> {
-
   final websiteController = TextEditingController();
-
   final usernameController = TextEditingController();
-
   final passwordController = TextEditingController();
+
+  PasswordStrength _strength = PasswordStrength.weak;
+
+  @override
+  void initState() {
+    super.initState();
+
+    passwordController.addListener(() {
+      setState(() {
+        _strength =
+            PasswordStrengthChecker.check(passwordController.text);
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -32,19 +43,18 @@ class _AddPasswordScreenState extends State<AddPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final provider = Provider.of<PasswordProvider>(context, listen: false);
+    final provider =
+        Provider.of<PasswordProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Password"),
         centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-
             CustomTextField(
               controller: websiteController,
               label: "Website",
@@ -68,31 +78,49 @@ class _AddPasswordScreenState extends State<AddPasswordScreen> {
               obscureText: true,
             ),
 
-            const SizedBox(height: 40),
+            const SizedBox(height: 15),
+
+            Row(
+              children: [
+                const Text(
+                  "Password Strength: ",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+
+                Text(
+                  _strength.name.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: _strength == PasswordStrength.weak
+                        ? Colors.red
+                        : _strength == PasswordStrength.medium
+                            ? Colors.orange
+                            : Colors.green,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 30),
 
             CustomButton(
               text: "SAVE PASSWORD",
               onPressed: () {
-
                 provider.addPassword(
-
                   PasswordModel(
-
                     website: websiteController.text,
-
                     username: usernameController.text,
-
                     password: passwordController.text,
-
                   ),
-
                 );
 
                 Navigator.pop(context);
-
               },
             ),
-
           ],
         ),
       ),
