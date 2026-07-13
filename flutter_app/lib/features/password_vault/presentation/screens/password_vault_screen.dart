@@ -18,46 +18,66 @@ class PasswordVaultScreen extends StatelessWidget {
       ),
       body: Consumer<PasswordProvider>(
         builder: (context, provider, child) {
-          if (provider.passwords.isEmpty) {
-            return const Center(
-              child: Text(
-                "No Passwords Added Yet",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: "Search Password...",
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    provider.setSearchQuery(value);
+                  },
                 ),
               ),
-            );
-          }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: provider.passwords.length,
-            itemBuilder: (context, index) {
-              final password = provider.passwords[index];
+              Expanded(
+                child: provider.passwords.isEmpty
+                    ? const Center(
+                        child: Text(
+                          "No Passwords Found",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: provider.passwords.length,
+                        itemBuilder: (context, index) {
+                          final password = provider.passwords[index];
 
-              return PasswordTile(
-                website: password.website,
-                username: password.username,
-                password: password.password,
+                          return PasswordTile(
+                            website: password.website,
+                            username: password.username,
+                            password: password.password,
 
-                onEdit: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => EditPasswordScreen(
-                        index: index,
-                        password: password,
+                            onEdit: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => EditPasswordScreen(
+                                    index: index,
+                                    password: password,
+                                  ),
+                                ),
+                              );
+                            },
+
+                            onDelete: () {
+                              provider.deletePassword(index);
+                            },
+                          );
+                        },
                       ),
-                    ),
-                  );
-                },
-
-                onDelete: () {
-                  provider.deletePassword(index);
-                },
-              );
-            },
+              ),
+            ],
           );
         },
       ),
