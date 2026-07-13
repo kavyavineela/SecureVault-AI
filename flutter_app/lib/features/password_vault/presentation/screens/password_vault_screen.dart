@@ -30,14 +30,12 @@ class PasswordVaultScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onChanged: (value) {
-                    provider.setSearchQuery(value);
-                  },
+                  onChanged: provider.setSearchQuery,
                 ),
               ),
 
               Expanded(
-                child: provider.passwords.isEmpty
+                child: provider.filteredPasswords.isEmpty
                     ? const Center(
                         child: Text(
                           "No Passwords Found",
@@ -49,15 +47,15 @@ class PasswordVaultScreen extends StatelessWidget {
                       )
                     : ListView.builder(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: provider.passwords.length,
+                        itemCount: provider.filteredPasswords.length,
                         itemBuilder: (context, index) {
-                          final password = provider.passwords[index];
+                          final password =
+                              provider.filteredPasswords[index];
 
                           return PasswordTile(
                             website: password.website,
                             username: password.username,
                             password: password.password,
-
                             onEdit: () {
                               Navigator.push(
                                 context,
@@ -69,7 +67,6 @@ class PasswordVaultScreen extends StatelessWidget {
                                 ),
                               );
                             },
-
                             onDelete: () {
                               provider.deletePassword(index);
                             },

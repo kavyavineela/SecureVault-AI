@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+
 import '../../domain/models/password_model.dart';
 
 class PasswordProvider extends ChangeNotifier {
-  final List<PasswordModel> _passwords = [];
+  final Box<PasswordModel> _passwordBox =
+      Hive.box<PasswordModel>('passwords');
+
+  List<PasswordModel> get passwords => _passwordBox.values.toList();
 
   String _searchQuery = "";
 
-  List<PasswordModel> get passwords {
+  List<PasswordModel> get filteredPasswords {
     if (_searchQuery.isEmpty) {
-      return _passwords;
+      return passwords;
     }
 
-    return _passwords.where((password) {
+    return passwords.where((password) {
       return password.website
           .toLowerCase()
           .contains(_searchQuery.toLowerCase());
@@ -23,18 +28,21 @@ class PasswordProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addPassword(PasswordModel password) {
-    _passwords.add(password);
+  Future<void> addPassword(PasswordModel password) async {
+    await _passwordBox.add(password);
     notifyListeners();
   }
 
-  void deletePassword(int index) {
-    _passwords.removeAt(index);
+  Future<void> deletePassword(int index) async {
+    await _passwordBox.deleteAt(index);
     notifyListeners();
   }
 
-  void updatePassword(int index, PasswordModel updatedPassword) {
-    _passwords[index] = updatedPassword;
+  Future<void> updatePassword(
+      int index,
+      PasswordModel password,
+      ) async {
+    await _passwordBox.putAt(index, password);
     notifyListeners();
   }
 }

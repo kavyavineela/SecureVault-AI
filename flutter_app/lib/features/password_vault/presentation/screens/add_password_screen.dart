@@ -6,6 +6,7 @@ import '../../domain/models/password_model.dart';
 import '../../logic/providers/password_provider.dart';
 import '../../../authentication/presentation/widgets/custom_button.dart';
 import '../../../authentication/presentation/widgets/custom_text_field.dart';
+import '../../../../core/utils/password_generator.dart';
 
 class AddPasswordScreen extends StatefulWidget {
   const AddPasswordScreen({super.key});
@@ -105,8 +106,26 @@ class _AddPasswordScreenState extends State<AddPasswordScreen> {
               ],
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 15),
 
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton.icon(
+    onPressed: () {
+      final generated = PasswordGenerator.generate();
+
+      passwordController.text = generated;
+
+      setState(() {
+        _strength = PasswordStrengthChecker.check(generated);
+      });
+    },
+    icon: const Icon(Icons.casino),
+    label: const Text("Generate Strong Password"),
+  ),
+),
+
+const SizedBox(height: 30),
             CustomButton(
               text: "SAVE PASSWORD",
               onPressed: () {
