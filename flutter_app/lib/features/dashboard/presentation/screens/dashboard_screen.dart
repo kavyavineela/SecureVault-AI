@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/dashboard_card.dart';
 import '../../../password_vault/presentation/screens/password_vault_screen.dart';
+import '../../../secure_notes/presentation/screens/secure_notes_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -24,9 +25,7 @@ class DashboardScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 8),
-
             const Text(
               "Your Digital Security Dashboard",
               style: TextStyle(
@@ -34,9 +33,7 @@ class DashboardScreen extends StatelessWidget {
                 color: Colors.grey,
               ),
             ),
-
             const SizedBox(height: 25),
-
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
@@ -50,8 +47,7 @@ class DashboardScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              const PasswordVaultScreen(),
+                          builder: (_) => const PasswordVaultScreen(),
                         ),
                       );
                     },
@@ -60,7 +56,14 @@ class DashboardScreen extends StatelessWidget {
                   DashboardCard(
                     icon: Icons.note,
                     title: "Secure Notes",
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SecureNotesScreen(),
+                        ),
+                      );
+                    },
                   ),
 
                   DashboardCard(
@@ -71,7 +74,7 @@ class DashboardScreen extends StatelessWidget {
 
                   DashboardCard(
                     icon: Icons.image,
-                    title: "Images",
+                    title: "Secure Images",
                     onTap: () {},
                   ),
 
