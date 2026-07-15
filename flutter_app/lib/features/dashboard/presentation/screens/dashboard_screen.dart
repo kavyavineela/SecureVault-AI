@@ -54,17 +54,10 @@ class DashboardScreen extends StatelessWidget {
                   ),
 
                   DashboardCard(
-                    icon: Icons.note,
-                    title: "Secure Notes",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const SecureNotesScreen(),
-                        ),
-                      );
-                    },
-                  ),
+  icon: Icons.note,
+  title: "Secure Notes",
+  onTap: () {},
+),
 
                   DashboardCard(
                     icon: Icons.folder,
