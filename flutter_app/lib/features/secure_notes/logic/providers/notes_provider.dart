@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+
 import '../../domain/models/note_model.dart';
 
 class NotesProvider extends ChangeNotifier {
-  final List<NoteModel> _notes = [];
+  final Box<NoteModel> _notesBox = Hive.box<NoteModel>('notes');
 
-  List<NoteModel> get notes => _notes;
+  List<NoteModel> get notes => _notesBox.values.toList();
 
-  void addNote(NoteModel note) {
-    _notes.add(note);
+  Future<void> addNote(NoteModel note) async {
+    await _notesBox.add(note);
     notifyListeners();
   }
 
-  void deleteNote(int index) {
-    _notes.removeAt(index);
+  Future<void> deleteNote(int index) async {
+    await _notesBox.deleteAt(index);
     notifyListeners();
   }
 
-  void updateNote(int index, NoteModel note) {
-    _notes[index] = note;
+  Future<void> updateNote(int index, NoteModel note) async {
+    await _notesBox.putAt(index, note);
     notifyListeners();
   }
 }
