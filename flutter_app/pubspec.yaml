@@ -29,14 +29,19 @@ dependencies:
   # UUID Generator
   uuid: ^4.5.1
 
+  # AES Encryption
+  encrypt: ^5.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^6.0.0
 
+  # Hive Code Generator
   build_runner: ^2.4.13
   hive_generator: ^2.0.1
+
 flutter:
   uses-material-design: true
 
