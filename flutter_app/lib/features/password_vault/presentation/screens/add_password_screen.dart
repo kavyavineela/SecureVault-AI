@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/services/encryption_service.dart';
+import '../../../../core/utils/password_generator.dart';
 import '../../../../core/utils/password_strength.dart';
-import '../../domain/models/password_model.dart';
-import '../../logic/providers/password_provider.dart';
 import '../../../authentication/presentation/widgets/custom_button.dart';
 import '../../../authentication/presentation/widgets/custom_text_field.dart';
-import '../../../../core/utils/password_generator.dart';
+import '../../domain/models/password_model.dart';
+import '../../logic/providers/password_provider.dart';
 
 class AddPasswordScreen extends StatefulWidget {
   const AddPasswordScreen({super.key});
@@ -90,7 +91,6 @@ class _AddPasswordScreenState extends State<AddPasswordScreen> {
                     fontSize: 16,
                   ),
                 ),
-
                 Text(
                   _strength.name.toUpperCase(),
                   style: TextStyle(
@@ -108,36 +108,45 @@ class _AddPasswordScreenState extends State<AddPasswordScreen> {
 
             const SizedBox(height: 15),
 
-SizedBox(
-  width: double.infinity,
-  child: ElevatedButton.icon(
-    onPressed: () {
-      final generated = PasswordGenerator.generate();
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  final generated = PasswordGenerator.generate();
 
-      passwordController.text = generated;
+                  passwordController.text = generated;
 
-      setState(() {
-        _strength = PasswordStrengthChecker.check(generated);
-      });
-    },
-    icon: const Icon(Icons.casino),
-    label: const Text("Generate Strong Password"),
-  ),
-),
+                  setState(() {
+                    _strength =
+                        PasswordStrengthChecker.check(generated);
+                  });
+                },
+                icon: const Icon(Icons.casino),
+                label: const Text("Generate Strong Password"),
+              ),
+            ),
 
-const SizedBox(height: 30),
+            const SizedBox(height: 30),
+
             CustomButton(
               text: "SAVE PASSWORD",
-              onPressed: () {
-                provider.addPassword(
+              onPressed: () async {
+                final encryptedPassword =
+                    EncryptionService.encryptText(
+                  passwordController.text,
+                );
+
+                await provider.addPassword(
                   PasswordModel(
                     website: websiteController.text,
                     username: usernameController.text,
-                    password: passwordController.text,
+                    password: encryptedPassword,
                   ),
                 );
 
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
           ],

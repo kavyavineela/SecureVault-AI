@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/services/encryption_service.dart';
+
 class PasswordTile extends StatefulWidget {
   final String website;
   final String username;
@@ -24,10 +26,29 @@ class PasswordTile extends StatefulWidget {
 class _PasswordTileState extends State<PasswordTile> {
   bool isHidden = true;
 
+  late final String decryptedPassword;
+
+  @override
+  void initState() {
+    super.initState();
+
+    try {
+      decryptedPassword =
+          EncryptionService.decryptText(widget.password);
+    } catch (_) {
+      // If old unencrypted passwords exist,
+      // show them as-is instead of crashing.
+      decryptedPassword = widget.password;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 8,
+      ),
       elevation: 4,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -49,7 +70,9 @@ class _PasswordTileState extends State<PasswordTile> {
             const SizedBox(height: 8),
 
             Text(
-              isHidden ? "••••••••••" : widget.password,
+              isHidden
+                  ? "••••••••••"
+                  : decryptedPassword,
               style: const TextStyle(
                 fontSize: 16,
                 letterSpacing: 2,
@@ -78,12 +101,16 @@ class _PasswordTileState extends State<PasswordTile> {
                   icon: const Icon(Icons.copy),
                   onPressed: () {
                     Clipboard.setData(
-                      ClipboardData(text: widget.password),
+                      ClipboardData(
+                        text: decryptedPassword,
+                      ),
                     );
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text("Password copied"),
+                        content: Text(
+                          "Password copied",
+                        ),
                       ),
                     );
                   },
