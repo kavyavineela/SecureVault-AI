@@ -23,7 +23,7 @@ dependencies:
   # Path Provider
   path_provider: ^2.1.5
 
-  # Password Strength
+  # Password Strength Checker
   password_strength_checker: ^1.2.0
 
   # UUID Generator
@@ -31,6 +31,9 @@ dependencies:
 
   # AES Encryption
   encrypt: ^5.0.3
+
+  # Biometric Authentication
+  local_auth: ^2.3.0
 
 dev_dependencies:
   flutter_test:

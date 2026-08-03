@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/services/encryption_service.dart';
 import '../../logic/providers/notes_provider.dart';
 import 'add_note_screen.dart';
 import 'edit_note_screen.dart';
@@ -35,6 +36,23 @@ class SecureNotesScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final note = provider.notes[index];
 
+              String title;
+              String content;
+
+              try {
+                title =
+                    EncryptionService.decryptText(note.title);
+              } catch (_) {
+                title = note.title;
+              }
+
+              try {
+                content =
+                    EncryptionService.decryptText(note.content);
+              } catch (_) {
+                content = note.content;
+              }
+
               return Card(
                 elevation: 3,
                 margin: const EdgeInsets.only(bottom: 12),
@@ -44,17 +62,10 @@ class SecureNotesScreen extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Opening Edit Note..."),
-                        duration: Duration(milliseconds: 500),
-                      ),
-                    );
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EditNoteScreen(
+                        builder: (_) => EditNoteScreen(
                           index: index,
                           note: note,
                         ),
@@ -63,13 +74,13 @@ class SecureNotesScreen extends StatelessWidget {
                   },
                   child: ListTile(
                     title: Text(
-                      note.title,
+                      title,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     subtitle: Text(
-                      note.content,
+                      content,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -95,7 +106,7 @@ class SecureNotesScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const AddNoteScreen(),
+              builder: (_) => const AddNoteScreen(),
             ),
           );
         },

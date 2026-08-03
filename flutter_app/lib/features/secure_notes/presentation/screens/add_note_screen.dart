@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/services/encryption_service.dart';
 import '../../domain/models/note_model.dart';
 import '../../logic/providers/notes_provider.dart';
 import '../../../authentication/presentation/widgets/custom_button.dart';
@@ -63,15 +64,21 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
 
             CustomButton(
               text: "SAVE NOTE",
-              onPressed: () {
-                provider.addNote(
+              onPressed: () async {
+                await provider.addNote(
                   NoteModel(
-                    title: titleController.text,
-                    content: contentController.text,
+                    title: EncryptionService.encryptText(
+                      titleController.text,
+                    ),
+                    content: EncryptionService.encryptText(
+                      contentController.text,
+                    ),
                   ),
                 );
 
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
           ],

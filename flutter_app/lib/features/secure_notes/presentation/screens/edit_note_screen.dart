@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/services/encryption_service.dart';
 import '../../domain/models/note_model.dart';
 import '../../logic/providers/notes_provider.dart';
 
@@ -25,8 +26,24 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
   @override
   void initState() {
     super.initState();
-    titleController = TextEditingController(text: widget.note.title);
-    contentController = TextEditingController(text: widget.note.content);
+
+    String title;
+    String content;
+
+    try {
+      title = EncryptionService.decryptText(widget.note.title);
+    } catch (_) {
+      title = widget.note.title;
+    }
+
+    try {
+      content = EncryptionService.decryptText(widget.note.content);
+    } catch (_) {
+      content = widget.note.content;
+    }
+
+    titleController = TextEditingController(text: title);
+    contentController = TextEditingController(text: content);
   }
 
   @override
@@ -38,7 +55,10 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<NotesProvider>(context, listen: false);
+    final provider = Provider.of<NotesProvider>(
+      context,
+      listen: false,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -54,7 +74,9 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                 labelText: "Title",
               ),
             ),
+
             const SizedBox(height: 16),
+
             TextField(
               controller: contentController,
               maxLines: 6,
@@ -62,18 +84,26 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                 labelText: "Content",
               ),
             ),
+
             const SizedBox(height: 24),
+
             ElevatedButton(
-              onPressed: () {
-                provider.updateNote(
+              onPressed: () async {
+                await provider.updateNote(
                   widget.index,
                   NoteModel(
-                    title: titleController.text,
-                    content: contentController.text,
+                    title: EncryptionService.encryptText(
+                      titleController.text,
+                    ),
+                    content: EncryptionService.encryptText(
+                      contentController.text,
+                    ),
                   ),
                 );
 
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
               child: const Text("Update Note"),
             ),
